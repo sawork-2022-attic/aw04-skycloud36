@@ -40,6 +40,32 @@ public class PosController {
         posService.add(cart, pid, 1);
         model.addAttribute("products", posService.products());
         model.addAttribute("cart", cart);
-        return "index";
+        return "redirect:/";
+    }
+
+    @GetMapping("/delete")
+    public String deleteItem(@RequestParam(name = "pid") String pid, Model model){
+        posService.delete(cart, pid);
+        model.addAttribute("products", posService.products());
+        model.addAttribute("cart", cart);
+        return "redirect:/";
+    }
+
+    @GetMapping("/modify")
+    public String modifyItem(@RequestParam(name = "pid") String pid,
+                             @RequestParam(name = "amount") int amount,
+                             Model model){
+        posService.modify(cart, pid, amount);
+        model.addAttribute("products", posService.products());
+        model.addAttribute("cart", cart);
+        return "redirect:/";
+    }
+
+    @GetMapping("/empty")
+    public String emotyCart(Model model){
+        posService.empty(cart);
+        model.addAttribute("products", posService.products());
+        model.addAttribute("cart", cart);
+        return "redirect:/";
     }
 }

@@ -49,6 +49,24 @@ public class PosServiceImp implements PosService, Serializable {
     }
 
     @Override
+    public Cart delete(Cart cart, String productId){
+        cart.deleteItem(productId);
+        return cart;
+    }
+
+    @Override
+    public Cart modify(Cart cart, String productId, int amount){
+        cart.modifyItem(productId, amount);
+        return cart;
+    }
+
+    @Override
+    public Cart empty(Cart cart){
+        cart.emptyCart();
+        return cart;
+    }
+
+    @Override
     public List<Product> products() {
         return posDB.getProducts();
     }
