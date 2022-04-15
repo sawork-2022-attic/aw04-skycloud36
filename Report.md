@@ -19,7 +19,7 @@
 docker run -d --name jdpos-0.5 --cpus=0.5 -p 18888:8888 jdpos
 docker run -d --name jdpos-1 --cpus=1 -p 18889:8888 jdpos
 ```
-然后分别对这两个镜像进行压力测试，测试五个用户添加物品，增加物品，删除物品，清空购物车功能
+然后分别对这两个容器进行压力测试，测试五个用户添加物品，增加物品，删除物品，清空购物车功能
 ```java
 scenario("TaskOne Cpu=0.5")
     .exec(http("request_add").get("/add?pid=10058164"))
@@ -36,3 +36,8 @@ setUp(scn.injectOpen(atOnceUsers(5)).protocols(httpProtocol));
 1个CPU结果
 ![](result/TaskOneCpu1.png "1个CPU结果")
 结论：CPU数目增加时，会提升访问速度，但是由于本程序对计算执行较少，所以不会有显著提升。对于计算量大的程序，使用垂直扩展可以显著提升速度，但是这种方法基于CPU的性能来进行提升，成本高，上限低。
+
+## 3. 水平扩展压力测试
+创建4个使用0.5个CPU的容器作为四个服务器，进行压力测试，测试五个用户添加物品，增加物品，删除物品，清空购物车功能
+4个server结果：
+![](result/TaskTwoServer4.png "4个server结果")
