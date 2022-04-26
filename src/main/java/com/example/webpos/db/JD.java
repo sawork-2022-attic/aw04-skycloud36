@@ -6,6 +6,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 
 import java.io.IOException;
@@ -20,6 +21,7 @@ public class JD implements PosDB {
     private List<Product> products = null;
 
     @Override
+    @Cacheable(value = "Product")
     public List<Product> getProducts() {
         try {
             if (products == null)
@@ -31,6 +33,7 @@ public class JD implements PosDB {
     }
 
     @Override
+    @Cacheable(value = "Product", key = "#productId")
     public Product getProduct(String productId) {
         for (Product p : getProducts()) {
             if (p.getId().equals(productId)) {
@@ -40,6 +43,7 @@ public class JD implements PosDB {
         return null;
     }
 
+    @Cacheable(value = "Product")
     public static List<Product> parseJD(String keyword) throws IOException {
         //获取请求https://search.jd.com/Search?keyword=java
         String url = "https://search.jd.com/Search?keyword=" + keyword;

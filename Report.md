@@ -41,3 +41,7 @@ setUp(scn.injectOpen(atOnceUsers(5)).protocols(httpProtocol));
 创建4个使用0.5个CPU的容器作为四个服务器，进行压力测试，测试五个用户添加物品，增加物品，删除物品，清空购物车功能
 4个server结果：
 ![](result/TaskTwoServer4.png "4个server结果")
+
+## 4. 对product使用redis进行缓存
+给getProduct这一功能添加cacheable，由于测试实例中测试了对指定物品的增删改，该物品会被存在缓存中，所以显著提高了效率。
+![](result/TaskThree.png "redis cluster结果")

@@ -71,12 +71,7 @@ public class Cart implements Serializable {
             return true;
         }
         else{
-            if(item.getQuantity() > 0) {
-                total_cost += item.getQuantity() * item.getProduct().getPrice();
-                return items.add(item);
-            }
-            else
-                return false;
+            return false;
         }
     }
 
