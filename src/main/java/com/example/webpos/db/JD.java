@@ -21,7 +21,7 @@ public class JD implements PosDB {
     private List<Product> products = null;
 
     @Override
-    @Cacheable(value = "Product")
+    @Cacheable(value = "Products")
     public List<Product> getProducts() {
         try {
             if (products == null)
@@ -43,7 +43,6 @@ public class JD implements PosDB {
         return null;
     }
 
-    @Cacheable(value = "Product")
     public static List<Product> parseJD(String keyword) throws IOException {
         //获取请求https://search.jd.com/Search?keyword=java
         String url = "https://search.jd.com/Search?keyword=" + keyword;

@@ -17,11 +17,19 @@ public class PosController {
 
     private PosService posService;
 
-    private Cart cart;
-
+//    private Cart cart;
     @Autowired
-    public void setCart(Cart cart) {
-        this.cart = cart;
+    private HttpSession httpSession;
+
+    public void setCart(Cart cart){
+        httpSession.setAttribute("cart", cart);
+    }
+
+    public Cart getCart() {
+        if(httpSession.getAttribute("cart") == null){
+            this.setCart(new Cart());
+        }
+        return (Cart) httpSession.getAttribute("cart");
     }
 
     @Autowired
@@ -30,73 +38,75 @@ public class PosController {
     }
 
     @GetMapping("/")
-    public String pos(Model model, HttpSession session) {
-        if(session.getAttribute("login") == null || (boolean) (session.getAttribute("login")) == false){
+    public String pos(Model model) {
+        if(httpSession.getAttribute("login") == null || (boolean) (httpSession.getAttribute("login")) == false){
             return "redirect:/login";
         }
         model.addAttribute("products", posService.products());
-        model.addAttribute("cart", cart);
+        model.addAttribute("cart", this.getCart());
         return "index";
     }
 
     @GetMapping("/login")
-    String login(HttpSession session, Model model){
-        session.setAttribute("login",Boolean.TRUE);
+    String login(Model model){
+//        System.out.println("login\t" + httpSession.toString());
+        httpSession.setAttribute("login",Boolean.TRUE);
+        httpSession.setAttribute("cart", getCart());
         return "redirect:/";
     }
 
     @GetMapping("/add")
-    public String addByGet(@RequestParam(name = "pid") String pid, Model model, HttpSession session) {
-        System.out.println("add\t" + session);
-        if(session.getAttribute("login") == null || (boolean) (session.getAttribute("login")) == false){
-            System.out.println(session.getAttribute("login"));
+    public String addByGet(@RequestParam(name = "pid") String pid, Model model) {
+//        System.out.println("add\t" + pid + "\t" + httpSession.toString());
+        if(httpSession.getAttribute("login") == null
+                || (boolean) (httpSession.getAttribute("login")) == false){
             return "redirect:/login";
         }
-        posService.add(cart, pid, 1);
+        setCart(posService.add(getCart(), pid,1));
         model.addAttribute("products", posService.products());
-        model.addAttribute("cart", cart);
+        model.addAttribute("cart", getCart());
         return "redirect:/";
     }
 
 
     @GetMapping("/delete")
-    public String deleteItem(@RequestParam(name = "pid") String pid, Model model, HttpSession session) {
-        System.out.println("delete\t" + session);
-        if(session.getAttribute("login") == null || (boolean) (session.getAttribute("login")) == false){
-            System.out.println(session.getAttribute("login"));
+    public String deleteItem(@RequestParam(name = "pid") String pid, Model model) {
+//        System.out.println("delete\t" + pid + "\t" + httpSession.toString());
+        if(httpSession.getAttribute("login") == null
+                || (boolean) (httpSession.getAttribute("login")) == false){
             return "redirect:/login";
         }
-        posService.delete(cart, pid);
+        setCart(posService.delete(getCart(), pid));
         model.addAttribute("products", posService.products());
-        model.addAttribute("cart", cart);
+        model.addAttribute("cart", getCart());
         return "redirect:/";
     }
 
     @GetMapping("/modify")
     public String modifyItem(@RequestParam(name = "pid") String pid,
                              @RequestParam(name = "amount") int amount,
-                             Model model, HttpSession session) {
-        System.out.println("modify\t" + session);
-        if(session.getAttribute("login") == null || (boolean) (session.getAttribute("login")) == false){
-            System.out.println(session.getAttribute("login"));
+                             Model model) {
+//        System.out.println("modify\t" + pid + "\t" + amount + "\t" + httpSession.toString());
+        if(httpSession.getAttribute("login") == null
+                || (boolean) (httpSession.getAttribute("login")) == false){
             return "redirect:/login";
         }
-        posService.modify(cart, pid, amount);
+        setCart(posService.modify(getCart(), pid, amount));
         model.addAttribute("products", posService.products());
-        model.addAttribute("cart", cart);
+        model.addAttribute("cart", getCart());
         return "redirect:/";
     }
 
     @GetMapping("/empty")
-    public String emotyCart(Model model, HttpSession session) {
-        System.out.println("empty\t" + session);
-        if(session.getAttribute("login") == null || (boolean) (session.getAttribute("login")) == false){
-            System.out.println(session.getAttribute("login"));
+    public String emotyCart(Model model) {
+//        System.out.println("empty\t" + httpSession.toString());
+        if(httpSession.getAttribute("login") == null
+                || (boolean) (httpSession.getAttribute("login")) == false){
             return "redirect:/login";
         }
-        posService.empty(cart);
+        setCart(posService.empty(getCart()));
         model.addAttribute("products", posService.products());
-        model.addAttribute("cart", cart);
+        model.addAttribute("cart", getCart());
         return "redirect:/";
     }
 
